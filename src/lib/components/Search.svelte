@@ -2,6 +2,7 @@
 	import TrackList from './TrackList.svelte';
 	import { getAudioFeatures, searchForItem } from '$lib/api';
 	import type { TrackWithTempo } from '$lib/types';
+	import { getTracksWithTempos } from '$lib/utils';
 
 	let searchQuery = '';
 	let searchResults: SpotifyApi.SearchResponse = {};
@@ -9,13 +10,7 @@
 
 	async function handleSubmit() {
 		searchResults = await searchForItem(searchQuery);
-		const audioFeaturesResponse = await getAudioFeatures(
-			searchResults.tracks.items.map((track) => track.id)
-		);
-		const tempos = audioFeaturesResponse.audio_features.map((features) => features.tempo || null);
-		tracksWithTempo = searchResults.tracks.items.map((track, i) => {
-			return { ...track, tempo: tempos[i] };
-		});
+		tracksWithTempo = await getTracksWithTempos(searchResults.tracks.items);
 	}
 </script>
 

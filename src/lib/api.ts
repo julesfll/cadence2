@@ -51,3 +51,12 @@ export async function createPlaylist(
 	}
 	return createPlaylistRes.data;
 }
+
+export async function getUserTopItems(limit: number): Promise<SpotifyApi.UsersTopTracksResponse> {
+	const res = await instance.get('/me/top/tracks', {
+		params: {
+			limit
+		}
+	})
+	return res.data;
+}

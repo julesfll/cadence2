@@ -1,5 +1,6 @@
 <script lang="ts">
 	import Search from '$lib/components/Search.svelte';
+	import Library from '$lib/components/Library.svelte';
 
 	import { initiateSpotifyLogin } from '$lib/login';
 	import { user } from '$lib/stores';
@@ -15,4 +16,5 @@
 	<button class="border-2 border-black p-2" on:click={handleClick}>Login with Spotify</button>
 {:else}
 	<Search />
+	<Library />
 {/if}

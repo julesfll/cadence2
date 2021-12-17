@@ -4,7 +4,7 @@
 	import TrackList from './TrackList.svelte';
 	import RangeSlider from 'svelte-range-slider-pips';
 	import type { TrackWithTempo } from '$lib/types';
-	import { partition } from '$lib/utils';
+	import { partition, tempoFilter } from '$lib/utils';
 	import Accordion from './Accordion.svelte';
 	import { createPlaylist } from '$lib/api';
 	import { goto } from '$app/navigation';
@@ -15,9 +15,7 @@
 		maxBpm: number,
 		halftime: boolean = false
 	) {
-		const filter = ({ tempo }: TrackWithTempo) =>
-			(tempo >= minBpm && tempo <= maxBpm) ||
-			(halftime && tempo >= minBpm / 2 && tempo <= maxBpm / 2);
+		const filter = tempoFilter(minBpm, maxBpm, halftime);
 		return partition(tracks, filter);
 	}
 
@@ -37,9 +35,11 @@
 
 <div class="p-2">
 	{#if $user}
-		<h2 class="mb-2">
-			Hello {$user.display_name}
-		</h2>
+		<a href="/profile">
+			<h2 class="mb-2">
+				Hello {$user.display_name}
+			</h2>
+		</a>
 	{/if}
 	<button class="border-2 border-black p-1" on:click={handleCreatPlaylist}
 		>Export selected as playlist [/]</button

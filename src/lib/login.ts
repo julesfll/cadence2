@@ -50,7 +50,7 @@ export async function initiateSpotifyLogin() {
 				code_challenge_method: 'S256',
 				code_challenge: codeChallenge,
 				state,
-				scope: 'user-library-read playlist-modify-private'
+				scope: ['user-library-read', 'playlist-modify-private', 'user-top-read'].join(' ')
 			}
 		});
 
@@ -71,7 +71,7 @@ export async function requestAccessToken(code: string) {
 			redirect_uri,
 			client_id,
 			code_verifier: window.sessionStorage.getItem('codeVerifier')
-		}
+		};
 		const res = await axios.post(
 			spotifyBaseUrl + '/api/token',
 			new URLSearchParams(body).toString(),
@@ -81,7 +81,7 @@ export async function requestAccessToken(code: string) {
 				}
 			}
 		);
-    // TODO: store access token in a secure place
+		// TODO: store access token in a secure place
 		// TODO: store refresh token in cookie
 		window.sessionStorage.setItem('accessToken', res.data.access_token);
 	} catch (error) {
