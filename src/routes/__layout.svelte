@@ -1,9 +1,9 @@
 <script>
 	import '../app.css';
+	import Sidebar from '$lib/Sidebar.svelte';
 	import { onMount } from 'svelte';
 	import { getUserProfile } from '$lib/api';
-	import { selectedTracks, user } from '$lib/stores';
-	import TrackList from '$lib/TrackList.svelte';
+	import { user } from '$lib/stores';
 
 	onMount(async () => {
 		if (!$user) {
@@ -18,12 +18,7 @@
 		<slot />
 	</main>
 	<!-- https://every-layout.dev/layouts/sidebar/ -->
-	<aside class="border-black border-4 grow basis-[18rem] p-2">
-		{#if $user}
-			<h2 class="mb-2">
-				Hello {$user.display_name}
-			</h2>
-		{/if}
-		<TrackList tracks={$selectedTracks} />
+	<aside class="border-black border-4 grow basis-[18rem]">
+		<Sidebar />
 	</aside>
 </div>

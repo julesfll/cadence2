@@ -1,10 +1,15 @@
 <script lang="ts">
 	import { selectedTracks } from './stores';
+	import type { TrackWithTempo } from './types';
 
-	export let track: SpotifyApi.TrackObjectFull;
+	export let track: TrackWithTempo;
 
 	function addTrack() {
 		$selectedTracks = [...$selectedTracks, track];
+	}
+
+	function removeTrack() {
+		$selectedTracks = $selectedTracks.filter((trackInList) => trackInList !== track);
 	}
 </script>
 
@@ -15,6 +20,7 @@
 			alt="{track.album.name} cover"
 		/>
 		<div class="p-2">
+			<!-- TODO: truncate with ellipsis to ensure album cover is square -->
 			<h3>
 				{track.name}
 			</h3>
@@ -22,9 +28,14 @@
 				{#if track.explicit}
 					<span class="text-black bg-gray-300 text-xs py-1 px-2">E</span>
 				{/if}
-					{track.artists.map((artist) => artist.name).join(', ')}
+				{track.artists.map((artist) => artist.name).join(', ')}
+				{track.tempo}
 			</p>
 		</div>
 	</div>
-	<button on:click={addTrack} class="border-2 border-black py-0 px-2"> + </button>
+	{#if $selectedTracks.includes(track)}
+		<button on:click={removeTrack} class="bg-red-500 border-2 border-black py-0 px-2">-</button>
+	{:else}
+		<button on:click={addTrack} class="border-2 border-black py-0 px-2"> + </button>
+	{/if}
 </div>
