@@ -1,6 +1,6 @@
 <script>
 	import '../app.css';
-	import Sidebar from '$lib/Sidebar.svelte';
+	import Sidebar from '$lib/components/Sidebar.svelte';
 	import { onMount } from 'svelte';
 	import { getUserProfile } from '$lib/api';
 	import { user } from '$lib/stores';

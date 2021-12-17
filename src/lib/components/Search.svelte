@@ -1,8 +1,7 @@
 <script lang="ts">
 	import TrackList from './TrackList.svelte';
 	import { getAudioFeatures, searchForItem } from '$lib/api';
-	import Track from './Track.svelte';
-	import type { TrackWithTempo } from './types';
+	import type { TrackWithTempo } from '$lib/types';
 
 	let searchQuery = '';
 	let searchResults: SpotifyApi.SearchResponse = {};
@@ -30,7 +29,7 @@ Search for anything
 	/>
 	<button class="border-2 border-black p-2" type="submit">Search</button>
 </form>
-<h2 class="text-xl">Tracks</h2>
-{#if tracksWithTempo}
+{#if tracksWithTempo.length > 0}
+	<h2 class="text-xl">Tracks</h2>
 	<TrackList tracks={tracksWithTempo} />
 {/if}

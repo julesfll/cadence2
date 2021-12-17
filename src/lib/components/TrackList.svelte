@@ -1,6 +1,7 @@
 <script lang="ts">
-	import Track from '$lib/Track.svelte';
-	import type { TrackWithTempo } from './types';
+	import Track from './Track.svelte';
+	import type { TrackWithTempo } from '$lib/types';
+
 	export let tracks: TrackWithTempo[] = [];
 </script>
 

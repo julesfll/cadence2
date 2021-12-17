@@ -1,10 +1,13 @@
 <script lang="ts">
-	import '../app.css';
+	import '../../app.css';
 	import { selectedTracks, user } from '$lib/stores';
-	import TrackList from '$lib/TrackList.svelte';
+	import TrackList from './TrackList.svelte';
 	import RangeSlider from 'svelte-range-slider-pips';
-	import type { TrackWithTempo } from './types';
-	import { partition } from './utils';
+	import type { TrackWithTempo } from '$lib/types';
+	import { partition } from '$lib/utils';
+	import Accordion from './Accordion.svelte';
+	import { createPlaylist } from '$lib/api';
+	import { goto } from '$app/navigation';
 
 	function filterBpm(
 		tracks: TrackWithTempo[],
@@ -16,6 +19,14 @@
 			(tempo >= minBpm && tempo <= maxBpm) ||
 			(halftime && tempo >= minBpm / 2 && tempo <= maxBpm / 2);
 		return partition(tracks, filter);
+	}
+
+	async function handleCreatPlaylist() {
+		const name = prompt('Name your playlist: ');
+		if (name) {
+			const res = await createPlaylist($user.id, filteredTracks, name);
+			goto(res.uri);
+		}
 	}
 
 	let bpms = [170, 190];
@@ -30,6 +41,9 @@
 			Hello {$user.display_name}
 		</h2>
 	{/if}
+	<button class="border-2 border-black p-1" on:click={handleCreatPlaylist}
+		>Export selected as playlist [/]</button
+	>
 	<RangeSlider
 		min={150}
 		max={200}
@@ -47,5 +61,8 @@
 	</label>
 	<div />
 	<TrackList tracks={filteredTracks} />
-	{hiddenTracks.length} hidden tracks
+	<hr class="my-4" />
+	<Accordion title={`${hiddenTracks.length} hidden tracks`}>
+		<TrackList tracks={hiddenTracks} />
+	</Accordion>
 </div>

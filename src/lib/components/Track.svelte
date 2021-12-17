@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { selectedTracks } from './stores';
-	import type { TrackWithTempo } from './types';
+	import { selectedTracks } from '$lib/stores';
+	import type { TrackWithTempo } from '$lib/types';
 
 	export let track: TrackWithTempo;
 
@@ -18,9 +18,10 @@
 		<img
 			src={track.album.images[track.album.images.length - 1].url}
 			alt="{track.album.name} cover"
+			class="h-16"
 		/>
 		<div class="p-2">
-			<!-- TODO: truncate with ellipsis to ensure album cover is square -->
+			<!-- TODO: truncate with ellipsis to have uniform height -->
 			<h3>
 				{track.name}
 			</h3>
