@@ -12,9 +12,8 @@ export function partition<Type>(array: Type[], filter: (elem: Type) => boolean):
 export async function getTracksWithTempos(
 	tracks: SpotifyApi.TrackObjectFull[]
 ): Promise<TrackWithTempo[]> {
-	const audioFeaturesResponse = await getAudioFeatures(tracks.map((track) => track.id));
-	const tempos = audioFeaturesResponse.audio_features.map((features) => features.tempo || null);
-
+	const audioFeatures = await getAudioFeatures(tracks);
+	const tempos = audioFeatures.map((features) => features.tempo || null);
 	return tracks.map((track, i) => {
 		return { ...track, tempo: tempos[i] };
 	});

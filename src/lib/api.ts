@@ -25,14 +25,18 @@ export async function searchForItem(query: string): Promise<SpotifyApi.SearchRes
 }
 
 export async function getAudioFeatures(
-	ids: string[]
-): Promise<SpotifyApi.MultipleAudioFeaturesResponse> {
-	const res = await instance.get(`/audio-features`, {
-		params: {
-			ids: ids.join(',')
-		}
-	});
-	return res.data;
+	tracks: SpotifyApi.TrackObjectFull[]
+): Promise<SpotifyApi.AudioFeaturesObject[]> {
+	const ids = tracks.map((track) => track.id);
+	const features: SpotifyApi.AudioFeaturesObject[] = [];
+
+	for (let i = 0; i < ids.length; i += 100) {
+		const res = await instance.get('/audio-features', {
+			params: { ids: ids.slice(i, i + 100).join() }
+		});
+		features.push(...res.data.audio_features);
+	}
+	return features;
 }
 
 export async function createPlaylist(
@@ -57,6 +61,53 @@ export async function getUserTopItems(limit: number): Promise<SpotifyApi.UsersTo
 		params: {
 			limit
 		}
-	})
+	});
 	return res.data;
+}
+
+export async function getUserPlaylists(): Promise<SpotifyApi.PlaylistObjectFull[]> {
+	const playlists: SpotifyApi.PlaylistObjectFull[] = [];
+	let res = await instance.get('/me/playlists', { params: { limit: 50 } });
+	while (res.data.next) {
+		playlists.push(...res.data.items);
+		res = await instance.get(res.data.next);
+	}
+	playlists.push(...res.data.items);
+
+	return playlists;
+}
+
+export async function getPlaylistItems(id: string): Promise<SpotifyApi.TrackObjectFull[]> {
+	const tracks: SpotifyApi.TrackObjectFull[] = [];
+	let res: { data: SpotifyApi.PlaylistTrackResponse } = await instance.get(
+		`/playlists/${id}/tracks`,
+		{
+			params: { limit: 100 }
+		}
+	);
+
+	while (res.data.next) {
+		tracks.push(
+			...res.data.items.filter((track) => track.track.type === 'track').map((item) => item.track)
+		);
+		res = await instance.get(res.data.next);
+	}
+	tracks.push(
+		...res.data.items.filter((track) => track.track.type === 'track').map((item) => item.track)
+	);
+	return tracks;
+}
+
+export async function getSavedTracks(): Promise<SpotifyApi.TrackObjectFull[]> {
+	const tracks: SpotifyApi.TrackObjectFull[] = [];
+	let res: { data: SpotifyApi.UsersSavedTracksResponse } = await instance.get('/me/tracks', {
+		params: { limit: 50 }
+	});
+	while (res.data.next) {
+		tracks.push(...res.data.items.map((item) => item.track));
+		console.log(res.data.next);
+		res = await instance.get(res.data.next);
+	}
+	tracks.push(...res.data.items.map((item) => item.track));
+	return tracks;
 }
