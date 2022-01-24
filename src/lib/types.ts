@@ -1,3 +1,3 @@
 export interface TrackWithTempo extends SpotifyApi.TrackObjectFull {
-  tempo: number | null;
+	tempo: number | null;
 }

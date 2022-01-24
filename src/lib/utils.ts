@@ -19,8 +19,8 @@ export async function getTracksWithTempos(
 	});
 }
 
-export function tempoFilter(minBpm: number, maxBpm: number, halftime: boolean) {
-	return ({ tempo }: TrackWithTempo) =>
+export function tempoFilter(minBpm: number, maxBpm: number, allowHalftime: boolean) {
+	return ({ tempo }: TrackWithTempo): boolean =>
 		(tempo >= minBpm && tempo <= maxBpm) ||
-		(halftime && tempo >= minBpm / 2 && tempo <= maxBpm / 2);
+		(allowHalftime && tempo >= minBpm / 2 && tempo <= maxBpm / 2);
 }

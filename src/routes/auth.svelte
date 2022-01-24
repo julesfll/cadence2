@@ -4,9 +4,9 @@
 	import { onMount } from 'svelte';
 
 	onMount(async () => {
-    const urlParams = new URLSearchParams(window.location.search);
+		const urlParams = new URLSearchParams(window.location.search);
 		checkState(urlParams.get('state'));
-    requestAccessToken(urlParams.get('code'));
+		requestAccessToken(urlParams.get('code'));
 
 		goto('/');
 	});

@@ -49,7 +49,7 @@ export async function createPlaylist(
 		public: false
 	});
 	for (let i = 0; i < tracks.length; i += 100) {
-		const addItemsRes = await instance.post(`/playlists/${createPlaylistRes.data.id}/tracks`, {
+		await instance.post(`/playlists/${createPlaylistRes.data.id}/tracks`, {
 			uris: tracks.slice(i, i + 100).map((track) => track.uri)
 		});
 	}
@@ -65,37 +65,27 @@ export async function getUserTopItems(limit: number): Promise<SpotifyApi.UsersTo
 	return res.data;
 }
 
-export async function getUserPlaylists(): Promise<SpotifyApi.PlaylistObjectFull[]> {
-	const playlists: SpotifyApi.PlaylistObjectFull[] = [];
+export async function getUserPlaylists(): Promise<SpotifyApi.PlaylistObjectSimplified[]> {
+	const playlists: SpotifyApi.PlaylistObjectSimplified[] = [];
 	let res = await instance.get('/me/playlists', { params: { limit: 50 } });
 	while (res.data.next) {
 		playlists.push(...res.data.items);
 		res = await instance.get(res.data.next);
 	}
 	playlists.push(...res.data.items);
-
 	return playlists;
 }
 
-export async function getPlaylistItems(id: string): Promise<SpotifyApi.TrackObjectFull[]> {
-	const tracks: SpotifyApi.TrackObjectFull[] = [];
-	let res: { data: SpotifyApi.PlaylistTrackResponse } = await instance.get(
-		`/playlists/${id}/tracks`,
-		{
-			params: { limit: 100 }
-		}
-	);
-
-	while (res.data.next) {
-		tracks.push(
-			...res.data.items.filter((track) => track.track.type === 'track').map((item) => item.track)
-		);
-		res = await instance.get(res.data.next);
+export async function getPlaylist(id: string): Promise<SpotifyApi.SinglePlaylistResponse> {
+	const res: { data: SpotifyApi.SinglePlaylistResponse } = await instance.get(`/playlists/${id}`);
+	let nextUrl = res.data.tracks.next;
+	while (nextUrl) {
+		const nextTrackRes = await instance.get(nextUrl);
+		res.data.tracks.items.push(...nextTrackRes.data.items);
+		nextUrl = nextTrackRes.data.next;
 	}
-	tracks.push(
-		...res.data.items.filter((track) => track.track.type === 'track').map((item) => item.track)
-	);
-	return tracks;
+	console.log(res.data);
+	return res.data;
 }
 
 export async function getSavedTracks(): Promise<SpotifyApi.TrackObjectFull[]> {

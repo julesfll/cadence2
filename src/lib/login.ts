@@ -27,7 +27,7 @@ async function generateCodeChallenge(codeVerifier: string) {
 	return base64Digest.replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '');
 }
 
-export async function initiateSpotifyLogin() {
+export async function initiateSpotifyLogin(): Promise<void> {
 	const state = generateRandomString(12);
 	const codeVerifier = generateRandomString(128);
 
@@ -50,20 +50,26 @@ export async function initiateSpotifyLogin() {
 				code_challenge_method: 'S256',
 				code_challenge: codeChallenge,
 				state,
-				scope: ['user-library-read', 'playlist-modify-private', 'user-top-read'].join(' ')
+				show_dialog: 'false',
+				scope: [
+					'user-library-read',
+					'playlist-read-private',
+					'playlist-modify-private',
+					'user-top-read'
+				].join(' ')
 			}
 		});
 
 	goto(loginUrl);
 }
 
-export function checkState(stateInUrl: string) {
+export function checkState(stateInUrl: string): void {
 	if (window.sessionStorage.getItem('state') !== stateInUrl) {
 		throw Error('Mismatched state');
 	}
 }
 
-export async function requestAccessToken(code: string) {
+export async function requestAccessToken(code: string): Promise<void> {
 	try {
 		const body = {
 			grant_type: 'authorization_code',

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import TrackList from './TrackList.svelte';
-	import { getAudioFeatures, searchForItem } from '$lib/api';
+	import { searchForItem } from '$lib/api';
 	import type { TrackWithTempo } from '$lib/types';
 	import { getTracksWithTempos } from '$lib/utils';
 

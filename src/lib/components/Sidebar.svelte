@@ -13,9 +13,9 @@
 		tracks: TrackWithTempo[],
 		minBpm: number,
 		maxBpm: number,
-		halftime: boolean = false
+		allowHalftime = false
 	) {
-		const filter = tempoFilter(minBpm, maxBpm, halftime);
+		const filter = tempoFilter(minBpm, maxBpm, allowHalftime);
 		return partition(tracks, filter);
 	}
 
