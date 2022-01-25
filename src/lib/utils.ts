@@ -19,8 +19,15 @@ export async function getTracksWithTempos(
 	});
 }
 
-export function tempoFilter(minBpm: number, maxBpm: number, allowHalftime: boolean) {
+export function createTempoFilter(minBpm: number, maxBpm: number, allowHalftime: boolean) {
 	return ({ tempo }: TrackWithTempo): boolean =>
 		(tempo >= minBpm && tempo <= maxBpm) ||
 		(allowHalftime && tempo >= minBpm / 2 && tempo <= maxBpm / 2);
+}
+
+export function filterTracks(
+	tracks: TrackWithTempo[],
+	filter: ({ tempo }: TrackWithTempo) => boolean
+): [TrackWithTempo[], TrackWithTempo[]] {
+	return partition(tracks, filter);
 }

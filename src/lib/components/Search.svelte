@@ -2,11 +2,18 @@
 	import TrackList from './TrackList.svelte';
 	import { searchForItem } from '$lib/api';
 	import type { TrackWithTempo } from '$lib/types';
-	import { getTracksWithTempos } from '$lib/utils';
+	import { filterTracks, getTracksWithTempos } from '$lib/utils';
+	import { trackFilter } from '$lib/stores';
+import Accordion from './Accordion.svelte';
 
 	let searchQuery = '';
 	let searchResults: SpotifyApi.SearchResponse = {};
 	let tracksWithTempo: TrackWithTempo[] = [];
+
+	let shownTracks = [];
+	let hiddenTracks = [];
+
+	$: [shownTracks, hiddenTracks] = filterTracks(tracksWithTempo, $trackFilter);
 
 	async function handleSubmit() {
 		searchResults = await searchForItem(searchQuery);
@@ -26,5 +33,9 @@ Search for anything
 </form>
 {#if tracksWithTempo.length > 0}
 	<h2 class="text-xl">Tracks</h2>
-	<TrackList tracks={tracksWithTempo} />
+	<TrackList tracks={shownTracks} />
+	<hr class="my-4" />
+	<Accordion title={`${hiddenTracks.length} hidden tracks`}>
+		<TrackList tracks={hiddenTracks} />
+	</Accordion>
 {/if}
