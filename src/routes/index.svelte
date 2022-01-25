@@ -1,5 +1,5 @@
 <script lang="ts">
-	import Search from '$lib/components/Search.svelte';
+	import SearchBox from '$lib/components/SearchBox.svelte';
 	import Library from '$lib/components/Library.svelte';
 
 	import { initiateSpotifyLogin } from '$lib/login';
@@ -15,6 +15,6 @@
 	<h2>Your perfect running playlist is here.</h2>
 	<button class="border-2 border-black p-2" on:click={handleClick}>Login with Spotify</button>
 {:else}
-	<Search />
+	<SearchBox />
 	<Library />
 {/if}

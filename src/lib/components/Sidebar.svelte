@@ -5,10 +5,10 @@
 	import { createPlaylist } from '$lib/api';
 	import { goto } from '$app/navigation';
 
+	let playlistName = '';
 	async function handleCreatePlaylist() {
-		const name = prompt('Name your playlist: ');
-		if (name) {
-			const res = await createPlaylist($user.id, $selectedTracks, name);
+		if (playlistName) {
+			const res = await createPlaylist($user.id, $selectedTracks, playlistName);
 			goto(res.uri);
 		}
 	}
@@ -22,9 +22,11 @@
 			</h2>
 		</a>
 	{/if}
+	<div />
+	{$selectedTracks.length} tracks selected
+	<TrackList tracks={$selectedTracks} />
+	<input bind:value={playlistName} class="border-2 border-black p-1" type="text" placeholder="Name your playlist..." />
 	<button class="border-2 border-black p-1" on:click={handleCreatePlaylist}
 		>Export selected as playlist [/]</button
 	>
-	<div />
-	<TrackList tracks={$selectedTracks} />
 </div>

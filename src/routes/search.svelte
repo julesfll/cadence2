@@ -1,12 +1,16 @@
 <script lang="ts">
-	import TrackList from './TrackList.svelte';
+	import { page } from '$app/stores';
+	import { goto } from '$app/navigation';
 	import { searchForItem } from '$lib/api';
+	import TrackList from '$lib/components/TrackList.svelte';
+	import { trackFilter } from '$lib/stores';
 	import type { TrackWithTempo } from '$lib/types';
 	import { filterTracks, getTracksWithTempos } from '$lib/utils';
-	import { trackFilter } from '$lib/stores';
-import Accordion from './Accordion.svelte';
+	import { onMount } from 'svelte';
+	import Accordion from '$lib/components/Accordion.svelte';
 
-	let searchQuery = '';
+	let searchInput;
+	let query = '';
 	let searchResults: SpotifyApi.SearchResponse = {};
 	let tracksWithTempo: TrackWithTempo[] = [];
 
@@ -16,15 +20,29 @@ import Accordion from './Accordion.svelte';
 	$: [shownTracks, hiddenTracks] = filterTracks(tracksWithTempo, $trackFilter);
 
 	async function handleSubmit() {
-		searchResults = await searchForItem(searchQuery);
-		tracksWithTempo = await getTracksWithTempos(searchResults.tracks.items);
+		goto(`/search?q=${encodeURIComponent(query)}`);
+
+		if (query) {
+			searchResults = await searchForItem(query);
+			tracksWithTempo = await getTracksWithTempos(searchResults.tracks.items);
+		}
 	}
+
+	onMount(async () => {
+		query = $page.query.get('q');
+		searchInput.focus();
+
+		if (query) {
+			searchResults = await searchForItem(query);
+			tracksWithTempo = await getTracksWithTempos(searchResults.tracks.items);
+		}
+	});
 </script>
 
-Search for anything
 <form on:submit|preventDefault={handleSubmit}>
 	<input
-		bind:value={searchQuery}
+		bind:value={query}
+		bind:this={searchInput}
 		class="border-2 border-black p-2"
 		type="text"
 		placeholder="Type something"
