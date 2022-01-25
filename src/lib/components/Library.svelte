@@ -1,9 +1,9 @@
 <script lang="ts">
+	import PlaylistList from './PlaylistList.svelte';
 	import { getUserPlaylists } from '$lib/api';
 	import { user } from '$lib/stores';
-
 	import { onMount } from 'svelte';
-	import PlaylistItem from './PlaylistItem.svelte';
+
 	let playlists: SpotifyApi.PlaylistObjectSimplified[] = [];
 
 	onMount(async () => {
@@ -26,9 +26,5 @@
 			</div>
 		</a>
 	</li>
-	{#each playlists as playlist}
-		<li class="hover:bg-gray-200">
-			<PlaylistItem {playlist} />
-		</li>
-	{/each}
+	<PlaylistList {playlists} />
 </ul>

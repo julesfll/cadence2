@@ -14,11 +14,14 @@ export async function getUserProfile(): Promise<SpotifyApi.CurrentUsersProfileRe
 	return res.data;
 }
 
-export async function searchForItem(query: string): Promise<SpotifyApi.SearchResponse> {
+export async function searchForItem(
+	query: string,
+	types = ['track']
+): Promise<SpotifyApi.SearchResponse> {
 	const res = await instance.get('/search', {
 		params: {
 			q: query,
-			type: 'track'
+			type: types.join(',')
 		}
 	});
 	return res.data;
