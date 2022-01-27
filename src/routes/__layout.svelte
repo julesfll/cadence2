@@ -29,7 +29,7 @@
 						<span class="underline">{$user.display_name}</span></a
 					>
 				{:else}
-					Login (TODO)
+					<div class="float-right">Login (TODO)</div>
 				{/if}
 			</div>
 			<slot />

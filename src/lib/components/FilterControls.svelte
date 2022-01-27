@@ -3,9 +3,12 @@
 	import RangeSlider from 'svelte-range-slider-pips';
 	import { createTempoFilter } from '$lib/utils';
 	import { trackFilter } from '$lib/stores';
+	import TempoTapper from './TempoTapper.svelte';
 
 	const initialBpms = [170, 190];
+	const tapperRange = 10;
 
+	let tapperBpm = (initialBpms[0] + initialBpms[1]) / 2;
 	let bpms = initialBpms;
 	let allowHalftime = true;
 
@@ -15,12 +18,12 @@
 	}
 
 	$: $trackFilter = createTempoFilter(bpms[0], bpms[1], allowHalftime);
+	$: bpms = [tapperBpm - tapperRange, tapperBpm + tapperRange];
 </script>
 
 <div class="p-2">
-	<button on:click={resetSlider}>R</button>
 	<RangeSlider
-		min={150}
+		min={100}
 		max={200}
 		float
 		range
@@ -30,7 +33,11 @@
 		last="label"
 		bind:values={bpms}
 	/>
-	<label>
+	<button class="p-2 text-sm" on:click={resetSlider}>R</button>
+	<input type="number" class="text-sm p-1 w-12" bind:value={bpms[0]}>
+	<input type="number" class="text-sm p-1 w-12" bind:value={bpms[1]}>
+	<TempoTapper bind:bpm={tapperBpm} />
+	<label class="text-sm">
 		<input type="checkbox" bind:checked={allowHalftime} />
 		Allow halftime
 	</label>
