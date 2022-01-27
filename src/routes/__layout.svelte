@@ -21,7 +21,7 @@
 	<div class="flex flex-1 flex-col">
 		<main class="flex-grow overflow-y-auto p-4">
 			<!-- TODO: make sticky when scrolling down -->
-			<div>
+			<div class="mb-4">
 				<a href="/"><span class="text-xl bg-gray-400 p-1">C</span></a>
 				{#if $user}
 					<a href="/profile" class="float-right"

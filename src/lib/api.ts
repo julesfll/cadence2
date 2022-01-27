@@ -42,6 +42,27 @@ export async function getAudioFeatures(
 	return features;
 }
 
+export async function addTracksToPlaylist(
+	id: string,
+	tracks: SpotifyApi.TrackObjectFull[],
+	removeDuplicates = false
+): Promise<SpotifyApi.AddTracksToPlaylistResponse> {
+	if (removeDuplicates) {
+		const existingTrackIds = (await getPlaylist(id)).tracks.items.map((item) => item.track.id);
+		tracks = tracks.filter((track) => !existingTrackIds.includes(track.id));
+	}
+
+	let res: { data: SpotifyApi.AddTracksToPlaylistResponse };
+	for (let i = 0; i < tracks.length; i += 100) {
+		res = await instance.post(`/playlists/${id}/tracks`, {
+			uris: tracks.slice(i, i + 100).map((track) => track.uri),
+			position: 0
+		});
+	}
+
+	return res.data;
+}
+
 export async function createPlaylist(
 	userId: string,
 	tracks: SpotifyApi.TrackObjectFull[],
@@ -51,11 +72,8 @@ export async function createPlaylist(
 		name,
 		public: false
 	});
-	for (let i = 0; i < tracks.length; i += 100) {
-		await instance.post(`/playlists/${createPlaylistRes.data.id}/tracks`, {
-			uris: tracks.slice(i, i + 100).map((track) => track.uri)
-		});
-	}
+	addTracksToPlaylist(createPlaylistRes.data.id, tracks);
+
 	return createPlaylistRes.data;
 }
 

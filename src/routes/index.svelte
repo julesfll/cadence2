@@ -14,6 +14,5 @@
 	<h2>Your perfect running playlist is here.</h2>
 	<button class="border-2 border-black p-2" on:click={handleClick}>Login with Spotify</button>
 {:else}
-	<SearchBox />
 	<Library />
 {/if}

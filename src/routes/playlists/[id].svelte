@@ -5,8 +5,8 @@
 	import { getPlaylist, getSavedTracks } from '$lib/api';
 	import { filterTracks, getTracksWithTempos } from '$lib/utils';
 	import TrackList from '$lib/components/TrackList.svelte';
-	import { trackFilter } from '$lib/stores';
-import Accordion from '$lib/components/Accordion.svelte';
+	import { selectedTracks, trackFilter } from '$lib/stores';
+	import Accordion from '$lib/components/Accordion.svelte';
 
 	let tracks: TrackWithTempo[] = [];
 	let playlistName = 'loading playlist...';
@@ -15,6 +15,10 @@ import Accordion from '$lib/components/Accordion.svelte';
 	let hiddenTracks = [];
 
 	$: [shownTracks, hiddenTracks] = filterTracks(tracks, $trackFilter);
+
+	function addAll() {
+    $selectedTracks = Array.from(new Set($selectedTracks.concat(shownTracks)));
+  }
 
 	onMount(async () => {
 		const { id } = $page.params;
@@ -34,7 +38,10 @@ import Accordion from '$lib/components/Accordion.svelte';
 	<title>{playlistName} - Cadence</title>
 </svelte:head>
 
-<h1 class="text-3xl mb-2">{playlistName}</h1>
+<div class="flex justify-between">
+	<h1 class="text-3xl mb-2">{playlistName}</h1>
+	<button class="border-2 border-black py-0.5 px-3" on:click={addAll}>+ Add all</button>
+</div>
 <TrackList tracks={shownTracks} />
 <hr class="my-4" />
 <Accordion title={`${hiddenTracks.length} hidden tracks`}>
