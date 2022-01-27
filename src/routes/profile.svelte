@@ -4,7 +4,7 @@
 	import TrackList from '$lib/components/TrackList.svelte';
 	import { user } from '$lib/stores';
 	import type { TrackWithTempo } from '$lib/types';
-	import { getTracksWithTempos, tempoFilter } from '$lib/utils';
+	import { getTracksWithTempos, createTempoFilter } from '$lib/utils';
 	import { onMount } from 'svelte';
 
 	let filteredTopTracks: TrackWithTempo[] = [];
@@ -13,7 +13,7 @@
 		const topTracks = await getUserTopItems(50);
 		console.log(topTracks);
 		filteredTopTracks = (await getTracksWithTempos(topTracks.items)).filter(
-			tempoFilter(170, 190, true)
+			createTempoFilter(170, 190, true)
 		);
 	});
 </script>

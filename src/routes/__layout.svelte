@@ -14,17 +14,16 @@
 	});
 </script>
 
-<div class="flex h-screen justify-center flex-wrap">
-	<main class="basis-0 grow-[999] min-w-[50%]">
-		<div class="p-2">
-			<slot />
-		</div>
-		<footer class="border-black border-4">
-			<FilterControls />
-		</footer>
-	</main>
-	<!-- https://every-layout.dev/layouts/sidebar/ -->
-	<aside class="border-black border-4 grow basis-[18rem]">
+<div class="flex h-screen">
+	<aside class="w-1/3 max-w-sm bg-gray-300">
 		<Sidebar />
 	</aside>
+	<div class="flex flex-1 flex-col">
+		<main class="flex-grow overflow-y-auto p-4">
+			<slot />
+		</main>
+		<footer class="bg-gray-200 shrink-0">
+			<FilterControls />
+		</footer>
+	</div>
 </div>
