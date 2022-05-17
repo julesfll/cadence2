@@ -1,5 +1,4 @@
 <script lang="ts">
-	import SearchBox from '$lib/components/SearchBox.svelte';
 	import Library from '$lib/components/Library.svelte';
 
 	import { initiateSpotifyLogin } from '$lib/login';

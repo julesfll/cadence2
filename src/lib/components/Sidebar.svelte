@@ -5,6 +5,7 @@
 	import { addTracksToPlaylist, createPlaylist, getUserPlaylists } from '$lib/api';
 	import { goto } from '$app/navigation';
 	import { onMount } from 'svelte';
+	import Icon from '@iconify/svelte';
 
 	let userEditablePlaylists: SpotifyApi.PlaylistObjectSimplified[] = [];
 	let selectedAddPlaylistId = '';
@@ -56,7 +57,7 @@
 		{/each}
 	</select>
 	<button class="bg-gray-400 p-2" on:click={handleCreatePlaylist} disabled={!selectedAddPlaylistId}
-		>+</button
+		><Icon icon="ph:list-plus" /></button
 	>
 	<div>
 		<label class="text-sm"
@@ -66,7 +67,7 @@
 	</div>
 	<div class="flex justify-between">
 		<p>{$selectedTracks.length} tracks selected</p>
-		<button on:click={clearAll}>T</button>
+		<button on:click={clearAll}><Icon icon="ph:trash" /></button>
 	</div>
 	<TrackList tracks={$selectedTracks} />
 </div>
